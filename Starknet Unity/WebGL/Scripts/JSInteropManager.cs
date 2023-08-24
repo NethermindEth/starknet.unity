@@ -22,14 +22,14 @@ public class JSInteropManager : MonoBehaviour
     public static extern string GetAccount();
 
     [DllImport("__Internal")]
-    public static extern string SendTransactionArgentX(string contractAddress, string entrypoint, string[] calldata);
+    public static extern void SendTransactionArgentX(string contractAddress, string entrypoint, string calldata, string callbackObjectName, string callbackMethodName);
 
     [DllImport("__Internal")]
-    public static extern string SendTransactionBraavos(string contractAddress, string entrypoint, string[] calldata);
+    public static extern void SendTransactionBraavos(string contractAddress, string entrypoint, string calldata, string callbackObjectName, string callbackMethodName);
 
     [DllImport("__Internal")]
-    public static extern string SendTransaction(string contractAddress, string entrypoint, string[] calldata);
+    public static extern void SendTransaction(string contractAddress, string entrypoint, string calldata, string callbackObjectName, string callbackMethodName);
 
     [DllImport("__Internal")]
-    public static extern string[] CallContract(string contractAddress, string entrypoint, string[] calldata);
+    public static extern void CallContract(string contractAddress, string entrypoint, string calldata, string callbackObjectName, string callbackMethodName);
 }

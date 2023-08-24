@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WalletConnect : MonoBehaviour
 {
-    public static string contractAddress;
+    public static string userAddress;
     private IEnumerator ConnectWalletAsync(Action connectWalletFunction)
     {
         // Call the JavaScript method to connect the wallet
@@ -13,8 +13,8 @@ public class WalletConnect : MonoBehaviour
         // Wait for the connection to be established
         yield return new WaitUntil(() => JSInteropManager.IsConnected());
 
-        contractAddress = JSInteropManager.GetAccount();
-        Debug.Log("Connected to wallet: " + contractAddress);
+        userAddress = JSInteropManager.GetAccount();
+        Debug.Log("Connected to wallet: " + userAddress);
     }
 
     public void OnButtonConnectWalletArgentX()
@@ -32,8 +32,8 @@ public class WalletConnect : MonoBehaviour
     {
         if (JSInteropManager.IsConnected())
         {
-            contractAddress = JSInteropManager.GetAccount();
-            Debug.Log("Connected to wallet: " + contractAddress);
+            userAddress = JSInteropManager.GetAccount();
+            Debug.Log("Connected to wallet: " + userAddress);
         }
         bool available = JSInteropManager.IsWalletAvailable();
         if (!available)
