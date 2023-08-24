@@ -2,10 +2,11 @@ using System.Collections;
 using System;
 using UnityEngine;
 using UnityEngine.Networking;
+using Newtonsoft.Json;
 
 public class Rpc : MonoBehaviour
 {
-    private static string RPC_URL = "https://starknet-goerli.infura.io/v3/<projectID>";
+    private static string RPC_URL = "YOUR_RPC_URL";
 
     public static Rpc Instance { get; private set; }
 
@@ -27,11 +28,12 @@ public class Rpc : MonoBehaviour
         {
             Method = method,
             Params = parameters,
-            Id = 1
+            Id = 0
         };
 
-        var json = JsonUtility.ToJson(request);
+        var json = JsonConvert.SerializeObject(request);
         var content = new System.Text.UTF8Encoding().GetBytes(json);
+
 
         UnityWebRequest www = new UnityWebRequest(RPC_URL, "POST");
         www.uploadHandler = new UploadHandlerRaw(content);
@@ -47,7 +49,7 @@ public class Rpc : MonoBehaviour
         else
         {
             var responseString = www.downloadHandler.text;
-            var responseJson = JsonUtility.FromJson<JsonRpcRequest>(responseString);
+            var responseJson = JsonConvert.DeserializeObject<JsonRpcRequest>(responseString);
             callback(responseJson);
         }
     }
