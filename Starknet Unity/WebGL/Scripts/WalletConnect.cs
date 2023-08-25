@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WalletConnect : MonoBehaviour
 {
-    public static string userAddress;
+    public static string playerAddress;
     private IEnumerator ConnectWalletAsync(Action connectWalletFunction)
     {
         // Call the JavaScript method to connect the wallet
@@ -13,8 +13,9 @@ public class WalletConnect : MonoBehaviour
         // Wait for the connection to be established
         yield return new WaitUntil(() => JSInteropManager.IsConnected());
 
-        userAddress = JSInteropManager.GetAccount();
-        Debug.Log("Connected to wallet: " + userAddress);
+        playerAddress = JSInteropManager.GetAccount();
+        PlayerPrefs.SetString("playerAddress", playerAddress);
+        Debug.Log("Connected to wallet: " + playerAddress);
     }
 
     public void OnButtonConnectWalletArgentX()
@@ -30,10 +31,10 @@ public class WalletConnect : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (JSInteropManager.IsConnected())
+        if (PlayerPrefs.HasKey("playerAddress"))
         {
-            userAddress = JSInteropManager.GetAccount();
-            Debug.Log("Connected to wallet: " + userAddress);
+            playerAddress = PlayerPrefs.GetString("playerAddress");
+            Debug.Log("Connected to wallet: " + playerAddress);
         }
         bool available = JSInteropManager.IsWalletAvailable();
         if (!available)

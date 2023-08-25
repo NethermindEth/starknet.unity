@@ -6,8 +6,6 @@ using Newtonsoft.Json;
 
 public class Rpc : MonoBehaviour
 {
-    private static string RPC_URL = "YOUR_RPC_URL";
-
     public static Rpc Instance { get; private set; }
 
     private void Awake()
@@ -33,7 +31,7 @@ public class Rpc : MonoBehaviour
 
         var json = JsonConvert.SerializeObject(request);
         var content = new System.Text.UTF8Encoding().GetBytes(json);
-
+        string RPC_URL = PlayerPrefs.GetString("RPCNode");
 
         UnityWebRequest www = new UnityWebRequest(RPC_URL, "POST");
         www.uploadHandler = new UploadHandlerRaw(content);
