@@ -26,7 +26,9 @@ Make sure you import all of the files in the package.
 
 ![import starknet.unity](assets/import-all.png)
 
-After importing the package, you should see a popup dialogue that prompts you to enter your RPC URL. In case you don't see this dialogue, you can always open it manually by going to `Starknet SDK > Setup`.
+After importing the package, you should see a popup dialogue that prompts you to select your preferred game engine and enter your RPC URL. If you are building on Dojo, you'll also be asked to enter the world address.
+
+In case you don't see this dialogue, you can always open it manually by going to `Starknet SDK > Setup`.
 
 ![rpc url](assets/rpc-node.png)
 
