@@ -15,6 +15,11 @@ public class SDKInitializer
 
     static bool NeedsSetup()
     {
+        string gameEngine = PlayerPrefs.GetString("Game Engine");
+        if (gameEngine == "Dojo")
+        {
+            return !PlayerPrefs.HasKey("RPCNode") || !PlayerPrefs.HasKey("World Address");
+        }
         return !PlayerPrefs.HasKey("RPCNode");
     }
 }
