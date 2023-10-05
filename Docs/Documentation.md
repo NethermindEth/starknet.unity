@@ -18,7 +18,7 @@ Create a new Unity project or open an existing one. We recommend using Unity 202
 
 ## Import the Starknet Unity SDK
 
-Import the `starknet.unitypackage` package into your Unity project. You can do this manually through `Assets > Import Package > Custom Package` or by dragging it into the `Assets` folder in Unity editor.
+Import the `starknet.unitypackage` package into your Unity project. You can do this manually through `Assets -> Import Package -> Custom Package` or by dragging it into the `Assets` folder in Unity editor.
 
 ![import starknet.unity](assets/import-package.png)
 
@@ -28,13 +28,19 @@ Make sure you import all of the files in the package.
 
 After importing the package, you should see a popup dialogue that prompts you to select your preferred game engine and enter your RPC URL. If you are building on Dojo, you'll also be asked to enter the world address.
 
-In case you don't see this dialogue, you can always open it manually by going to `Starknet SDK > Setup`.
+In case you don't see this dialogue, you can always open it manually by going to `Starknet SDK -> Setup`.
 
 ![rpc url](assets/rpc-node.png)
 
+## Import Newtonsoft.JSON
+
+Newtonsoft’s Json.NET Package is required to use the SDK successfully.
+
+Go to `Windows -> Package Manager`. Once the Package Manager window opens, go to `Add package from git URL`, type `com.unity.nuget.newtonsoft-json` then click **Add**.
+
 ## Connect to a Starknet Wallet
 
-You can now enable players to connect to their Starknet wallets. Get started with the ConnectWallet sample scene by going to `Starknet Unity > Scenes > ConnectWallet`.
+You can now enable players to connect to their Starknet wallets. Get started with the ConnectWallet sample scene by going to `Starknet Unity -> Scenes -> ConnectWallet`.
 
 ![connect wallet](assets/connect-wallet.png)
 
