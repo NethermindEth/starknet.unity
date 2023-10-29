@@ -8,6 +8,7 @@ Starknet Unity SDK allows game developers to integrate Starknet blockchain funct
 - Seamless connection to the Starknet blockchain.
 - Argent and Braavos wallet support.
 - Tools for querying balances, sending transactions, and interacting with smart contracts.
+- Dojo Engine Support
 
 ## Installation
 
