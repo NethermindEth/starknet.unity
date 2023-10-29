@@ -43,7 +43,7 @@ public class Invoke : MonoBehaviour
         string _calldataHash = TransactionHash.Hash.ComputeCalldataHash(callArray, cairoVersion);
         string[] _calldata = TransactionHash.Hash.FormatCalldata(callArray, cairoVersion);
 
-        calldataHash = _calldataHash;
+        calldataHash = "0x" + _calldataHash;
         calldata = _calldata;
 
         string[]
@@ -56,39 +56,48 @@ public class Invoke : MonoBehaviour
         JsonRpc requestData = JsonRpcHandler.GenerateRequestData("starknet_getNonce", request);
         Debug.Log(requestData);
 
+        Settings.apiurl = PlayerPrefs.GetString("RPCNode");
         StartCoroutine(UnityRpcPlatform.SendPostRequestUnity(requestData, OnNonceComplete));
     }
 
     private void OnNonceComplete(object response)
     {
-        Debug.Log("Nonce complete: " + response);
-        object nonce = ((JsonRpcResponse)response).result;
-        ECDSA.ECSignature signature = TransactionHash.Hash.SignInvokeTransaction(
-                "0x1",
-                senderAddress,
-                calldataHash,
-                maxFee,
-                chainId,
-                nonce.ToString(),
-                TransactionHash.Hash.HexToBigInteger(privateKey)
-            );
-
-        string r = TransactionHash.Hash.BigIntegerToHex(signature.R);
-        string s = TransactionHash.Hash.BigIntegerToHex(signature.S);
-
-        Request request = new Request
+        try
         {
-            type = "INVOKE",
-            sender_address = senderAddress,
-            calldata = calldata,
-            max_fee = maxFee,
-            version = "0x1",
-            signature = new string[] { r, s },
-            nonce = nonce.ToString()
-        };
-        JsonRpc requestData = JsonRpcHandler.GenerateRequestData("starknet_addInvokeTransaction", request);
+            Debug.Log("Nonce complete: " + response);
+            object nonce = ((JsonRpcResponse)response).result;
+            ECDSA.ECSignature signature = TransactionHash.Hash.SignInvokeTransaction(
+                    "0x1",
+                    senderAddress,
+                    calldataHash,
+                    maxFee,
+                    chainId,
+                    nonce.ToString(),
+                    TransactionHash.Hash.HexToBigInteger(privateKey)
+                );
 
-        StartCoroutine(UnityRpcPlatform.SendPostRequestUnity(requestData, OnTransactionComplete));
+            string r = TransactionHash.Hash.BigIntegerToHex(signature.R);
+            string s = TransactionHash.Hash.BigIntegerToHex(signature.S);
+
+            Request request = new Request
+            {
+                type = "INVOKE",
+                sender_address = senderAddress,
+                calldata = calldata,
+                max_fee = maxFee,
+                version = "0x1",
+                signature = new string[] { r, s },
+                nonce = nonce.ToString()
+            };
+            JsonRpc requestData = JsonRpcHandler.GenerateRequestData("starknet_addInvokeTransaction", request);
+            Debug.Log(requestData);
+
+            StartCoroutine(UnityRpcPlatform.SendPostRequestUnity(requestData, OnTransactionComplete));
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError("An error occurred: " + ex.Message);
+        }
     }
 
     private static void OnTransactionComplete(object result)

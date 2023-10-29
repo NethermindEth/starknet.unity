@@ -131,8 +131,16 @@ public class TransactionHash : MonoBehaviour
 
         public static ECDSA.ECSignature SignInvokeTransaction(string version, string senderAddress, string calldataHash, string maxFee, string chainId, string nonce, BigInteger privateKey)
         {
-            BigInteger txHash = TransactionHashInvoke(version, senderAddress, calldataHash, maxFee, chainId, nonce);
-            return ECDSA.Sign(txHash, privateKey);
+            try
+            {
+                BigInteger txHash = TransactionHashInvoke(version, senderAddress, calldataHash, maxFee, chainId, nonce);
+                return ECDSA.Sign(txHash, privateKey);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Error signing transaction: " + e.Message);
+                throw;
+            }
         }
         public static BigInteger TransactionHashInvoke(string version, string senderAddress, string calldataHash, string maxFee, string chainId, string nonce)
         {
@@ -167,15 +175,7 @@ public class TransactionHash : MonoBehaviour
             BigInteger[] dataAsBigIntegers = new BigInteger[data.Length];
             for (int i = 0; i < data.Length; i++)
             {
-                if (data[i] == "0x289d4c5d81")
-                {
-                    dataAsBigIntegers[i] = new(11151000167265);
-                }
-                else
-                {
-                    dataAsBigIntegers[i] = HexToBigInteger(data[i]);
-                }
-                // dataAsBigIntegers[i] = BigInteger.One;
+                dataAsBigIntegers[i] = HexToBigInteger(data[i]);
             }
 
             // compute the hash
