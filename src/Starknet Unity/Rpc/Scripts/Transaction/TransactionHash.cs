@@ -21,11 +21,17 @@ public class TransactionHash : MonoBehaviour
         public static string[] FormatCalldataOther(Call[] callArray)
         {
             List<string> calldata = new List<string>();
+            BigInteger callArrayLength = new(callArray.Length);
+            calldata.Add("0x" + callArrayLength.ToString("x"));
 
             foreach (Call call in callArray)
             {
                 calldata.Add(call.To);
                 calldata.Add(call.Selector);
+
+                BigInteger dataLength = new(call.Data.Length);
+                calldata.Add("0x" + dataLength.ToString("x"));
+
                 foreach (string data in call.Data)
                 {
                     calldata.Add(data);
@@ -38,22 +44,32 @@ public class TransactionHash : MonoBehaviour
         public static string[] FormatCalldataCairo0(Call[] callArray)
         {
             List<string> calldata = new List<string>();
+            List<string> calls = new List<string>();
             BigInteger callArrayLength = new(callArray.Length);
-            calldata.Add(callArrayLength.ToString("x"));
+            calldata.Add("0x" + callArrayLength.ToString("x"));
 
+            int offset = 0;
             foreach (Call call in callArray)
             {
                 calldata.Add(call.To);
                 calldata.Add(call.Selector);
 
+                string dataOffset = offset.ToString("x");
+                calldata.Add("0x" + dataOffset);
+
                 BigInteger dataLength = new(call.Data.Length);
-                calldata.Add(dataLength.ToString("x"));
+                calldata.Add("0x" + dataLength.ToString("x"));
+
+                offset += call.Data.Length;
 
                 foreach (string data in call.Data)
                 {
-                    calldata.Add(data);
+                    calls.Add(data);
                 }
             }
+            calldata.Add("0x" + offset.ToString("x"));
+
+            calldata.AddRange(calls);
 
             return calldata.ToArray();
         }
@@ -84,47 +100,30 @@ public class TransactionHash : MonoBehaviour
 
         public static string ComputeCalldataHashOther(Call[] callArray)
         {
-            List<BigInteger> calldataHashes = new List<BigInteger>();
+            string[] formattedCallArray = FormatCalldataOther(callArray);
+            List<BigInteger> bigCalls = new List<BigInteger>();
 
-            foreach (Call call in callArray)
+            foreach (string call in formattedCallArray)
             {
-                BigInteger callHash = ComputeHashOnElements(call.Data);
-                BigInteger calldataHash = ECDSA.PedersenArrayHash(HexToBigInteger(call.To), HexToBigInteger(call.Selector), callHash);
-                calldataHashes.Add(calldataHash);
+                bigCalls.Add(HexToBigInteger(call));
             }
 
-            BigInteger calldata = ECDSA.PedersenArrayHash(calldataHashes.ToArray());
+            BigInteger calldataHash = ECDSA.PedersenArrayHash(bigCalls.ToArray());
 
-            return calldata.ToString("x");
+            return calldataHash.ToString("x");
         }
 
         public static string ComputeCalldataHashCairo0(Call[] callArray)
         {
-            List<BigInteger> calldata = new List<BigInteger>();
-            BigInteger callArrayLength = new(callArray.Length);
-            calldata.Add(callArrayLength);
+            string[] formattedCallArray = FormatCalldataCairo0(callArray);
+            List<BigInteger> bigCalls = new List<BigInteger>();
 
-            int offset = 0;
-            foreach (Call call in callArray)
+            foreach (string call in formattedCallArray)
             {
-                calldata.Add(HexToBigInteger(call.To));
-
-                calldata.Add(HexToBigInteger(call.Selector));
-
-                BigInteger dataOffset = new(offset);
-                calldata.Add(dataOffset);
-
-                BigInteger dataLength = new(call.Data.Length);
-                calldata.Add(dataLength);
-
-                foreach (string data in call.Data)
-                {
-                    calldata.Add(HexToBigInteger(data));
-                }
-                offset += call.Data.Length;
+                bigCalls.Add(HexToBigInteger(call));
             }
 
-            BigInteger calldataHash = ECDSA.PedersenArrayHash(calldata.ToArray());
+            BigInteger calldataHash = ECDSA.PedersenArrayHash(bigCalls.ToArray());
 
             return calldataHash.ToString("x");
         }
@@ -133,6 +132,7 @@ public class TransactionHash : MonoBehaviour
         {
             try
             {
+                Debug.Log(calldataHash);
                 BigInteger txHash = TransactionHashInvoke(version, senderAddress, calldataHash, maxFee, chainId, nonce);
                 return ECDSA.Sign(txHash, privateKey);
             }
