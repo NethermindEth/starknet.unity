@@ -75,8 +75,8 @@ public class Erc721Balance : MonoBehaviour
 {
     public void BalanceOf()
     {
-        string userAddress = "0x3b2d6f0b442e43c36888111924a2a2b8308836658f803abb76bc39b4b43a305";
-        string contractAddress = "0x4965b4eb535ea29ecc01564ff2034b24f358d923cbf3e8ee022cd0f86b69b99";
+        string userAddress = "USER_ADDRESS";
+        string contractAddress = "CONTRACT_ADDRESS";
 
         string[] calldata = new string[1];
         calldata[0] = userAddress;
@@ -108,8 +108,8 @@ public class Balance : MonoBehaviour
     {
         Settings.apiurl = PlayerPrefs.GetString("RPCNode");
         string selector = "balanceOf";
-        string userAddress = "0x3b2d6f0b442e43c36888111924a2a2b8308836658f803abb76bc39b4b43a305";
-        string contractAddress = "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
+        string userAddress = "USER_ADDRESS";
+        string contractAddress = "CONTRACT_ADDRESS";
 
         UnityRpcPlatform rpcPlatform = new UnityRpcPlatform();
         ContractInteraction contractInteraction = new ContractInteraction(contractAddress, selector, userAddress);
@@ -144,8 +144,8 @@ public class Mint : MonoBehaviour
 {
     public void MintToken()
     {
-        string recipientAddress = "0x003849130b66710d3640f77fe8d37cf6fcf1e0dbb33fb9518e864b98c5b1a5f8";
-        string contractAddress = "0x4965b4eb535ea29ecc01564ff2034b24f358d923cbf3e8ee022cd0f86b69b99";
+        string recipientAddress = "RECIPIENT_ADDRESS";
+        string contractAddress = "CONTRACT_ADDRESS";
 
         string[] calldata = new string[] {
             recipientAddress
