@@ -57,3 +57,131 @@ Select the appropriate WebGL template as shown below.
 Finally, build and run the project. You should now be able to connect to a Starknet wallet.
 
 ![webgl](assets/deploy.png)
+
+## Calling a Starknet Contract
+
+### WebGL
+
+You can call a Starknet contract by using the `CallContract` function. This function takes in the contract address, the method name, the calldata, the name of the class that will handle the response, and the name of the callback function.
+
+```csharp
+// This example shows how to check the ERC721 token balance of an address.
+using System.Globalization;
+using System.Numerics;
+using UnityEngine;
+using Utils;
+
+public class Erc721Balance : MonoBehaviour
+{
+    public void BalanceOf()
+    {
+        string userAddress = "0x3b2d6f0b442e43c36888111924a2a2b8308836658f803abb76bc39b4b43a305";
+        string contractAddress = "0x4965b4eb535ea29ecc01564ff2034b24f358d923cbf3e8ee022cd0f86b69b99";
+
+        string[] calldata = new string[1];
+        calldata[0] = userAddress;
+        string calldataString = JsonUtility.ToJson(new ArrayWrapper { array = calldata });
+        JSInteropManager.CallContract(contractAddress, "balanceOf", calldataString, "Erc721Balance", "Erc721Callback");
+    }
+
+    public void Erc721Callback(string response)
+    {
+        JsonResponse jsonResponse = JsonUtility.FromJson<JsonResponse>(response);
+        BigInteger balance = BigInteger.Parse(jsonResponse.result[0].Substring(2), NumberStyles.HexNumber);
+        Debug.Log(balance);
+    }
+}
+```
+
+### RPC
+
+```csharp
+using UnityEngine;
+using System.Collections;
+using StarkSharp.Platforms.Unity.RPC;
+using StarkSharp.Connectors.Components;
+using StarkSharp.Settings;
+
+public class Balance : MonoBehaviour
+{
+    public void CheckUserBalance()
+    {
+        Settings.apiurl = PlayerPrefs.GetString("RPCNode");
+        string selector = "balanceOf";
+        string userAddress = "0x3b2d6f0b442e43c36888111924a2a2b8308836658f803abb76bc39b4b43a305";
+        string contractAddress = "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
+
+        UnityRpcPlatform rpcPlatform = new UnityRpcPlatform();
+        ContractInteraction contractInteraction = new ContractInteraction(contractAddress, selector, userAddress);
+        rpcPlatform.CallContract(contractInteraction, OnSuccess, OnError);
+    }
+
+    void OnSuccess(string result)
+    {
+        Debug.Log("Contract call successful: " + result);
+    }
+
+    void OnError(string error)
+    {
+        Debug.LogError("Contract call error: " + error);
+    }
+}
+```
+
+## Sending a Transaction
+
+### WebGL
+
+You can send a transaction to a Starknet contract by using the `SendTransaction` function. This function takes in the contract address, the method name, the calldata, the name of the class that will handle the response, and the name of the callback function.
+
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Utils;
+
+public class Mint : MonoBehaviour
+{
+    public void MintToken()
+    {
+        string recipientAddress = "0x003849130b66710d3640f77fe8d37cf6fcf1e0dbb33fb9518e864b98c5b1a5f8";
+        string contractAddress = "0x4965b4eb535ea29ecc01564ff2034b24f358d923cbf3e8ee022cd0f86b69b99";
+
+        string[] calldata = new string[] {
+            recipientAddress
+        };
+        string calldataString = JsonUtility.ToJson(new ArrayWrapper { array = calldata });
+        JSInteropManager.SendTransaction(contractAddress, "mint", calldataString, "Erc721Mint", "MintCallback");
+    }
+
+    public void MintCallback(string transactionHash)
+    {
+        Debug.Log("https://goerli.voyager.online/tx/" + transactionHash);
+    }
+}
+```
+
+### RPC
+
+```csharp
+// This example shows how to transfer tokens from one address to another.
+{
+    private Invoke invokeInstance = null;
+    void Start()
+    {
+        string functionName = "transfer";
+        string senderAddress = "SENDER_ADDRESS";
+        string contractAddress = "CONTRACT_ADDRESS";
+        string recipientAddress = "RECIPIENT_ADDRESS";
+        string amount = "0x5af3107a4000" // 100000000000000 WEI in hex
+        string[] functionArgs = new string[] { recipientAddress, amount, "0x0" }; // argument of Uint256 type are padded with 0x0. Hence, the third argument
+        int cairoVersion = 1;
+        string maxFee = "0xa2d9d3b14c"; // use any value. maxFee will be calculated automatically
+        string chainId = "0x534e5f474f45524c49"; // SN_GOERLI
+        string privateKey = "YOUR_PRIVATE_KEY";
+
+        invokeInstance = GetComponent<Invoke>();
+        invokeInstance.CreateTransaction(userAddress, contractAddress, functionName, functionArgs, cairoVersion, maxFee, chainId, privateKey);
+    }
+}
+```
