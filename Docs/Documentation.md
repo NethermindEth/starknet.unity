@@ -166,7 +166,6 @@ public class Mint : MonoBehaviour
 ```csharp
 // This example shows how to transfer tokens from one address to another.
 {
-    private Invoke invokeInstance = null;
     void Start()
     {
         string functionName = "transfer";
@@ -175,13 +174,13 @@ public class Mint : MonoBehaviour
         string recipientAddress = "RECIPIENT_ADDRESS";
         string amount = "0x5af3107a4000" // 100000000000000 WEI in hex
         string[] functionArgs = new string[] { recipientAddress, amount, "0x0" }; // argument of Uint256 type are padded with 0x0. Hence, the third argument
-        int cairoVersion = 1;
+        CairoVersion cairoVersion = CairoVersion.Version1; // can also be CairoVersion.Version0 for legacy contracts
         string maxFee = "0xa2d9d3b14c"; // use any value. maxFee will be calculated automatically
         string chainId = "0x534e5f474f45524c49"; // SN_GOERLI
         string privateKey = "YOUR_PRIVATE_KEY";
 
-        invokeInstance = GetComponent<Invoke>();
-        invokeInstance.CreateTransaction(userAddress, contractAddress, functionName, functionArgs, cairoVersion, maxFee, chainId, privateKey);
+        // Send transaction is defined in `Assets/Starknet Unity/Rpc/Scripts/Transaction/SendTransaction.cs`
+        SendTransaction.Send(senderAddress, contractAddress, functionName, functionArg, cairoVersion, maxFee, chainId, privateKey, version);
     }
 }
 ```
