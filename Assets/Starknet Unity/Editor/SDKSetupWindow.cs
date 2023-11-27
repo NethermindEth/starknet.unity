@@ -4,9 +4,10 @@ using UnityEngine;
 public class SDKSetupWindow : EditorWindow
 {
     string rpcNode;
-    private string[] options = new string[] { "Dojo", "Starknet" }; // Add or remove options as needed.
+    private string[] options = new string[] { "Dojo", "Starknet" };
     private int selectedIndex;
     private string worldAddress;
+    private string actionAddress;
 
     [MenuItem("Starknet SDK/Setup")]
     public static void ShowWindow()
@@ -20,6 +21,7 @@ public class SDKSetupWindow : EditorWindow
         rpcNode = EditorPrefs.GetString("RPCNode", "Enter RPC Node");
         selectedIndex = EditorPrefs.GetInt("SelectedIndex", 0);
         worldAddress = EditorPrefs.GetString("WorldAddress", "Enter World Address");
+        actionAddress = EditorPrefs.GetString("ActionAddress", "Enter Action Address");
     }
 
     void OnGUI()
@@ -32,6 +34,7 @@ public class SDKSetupWindow : EditorWindow
         if (selectedIndex == 0)
         {
             worldAddress = EditorGUILayout.TextField("World address", worldAddress);
+            actionAddress = EditorGUILayout.TextField("Action address", actionAddress);
         }
 
         if (GUILayout.Button("Submit"))
@@ -44,13 +47,19 @@ public class SDKSetupWindow : EditorWindow
 
     void SetupSDK(string rpc)
     {
-        PlayerPrefs.SetString("RPCNode", rpc);
-        PlayerPrefs.SetString("Game Engine", options[selectedIndex]);
-        PlayerPrefs.SetString("World Address", worldAddress);
+        SaveSettingsToFile();
 
         // Save values to EditorPrefs so they persist between sessions
         EditorPrefs.SetString("RPCNode", rpcNode);
         EditorPrefs.SetInt("SelectedIndex", selectedIndex);
         EditorPrefs.SetString("WorldAddress", worldAddress);
+        EditorPrefs.SetString("ActionAddress", actionAddress);
+    }
+
+    void SaveSettingsToFile()
+    {
+        RuntimeSDKInitializer.SDKSettings settings = new RuntimeSDKInitializer.SDKSettings { rpcNode = rpcNode, gameEngine = options[selectedIndex], worldAddress = worldAddress, actionAddress = actionAddress };
+        string json = JsonUtility.ToJson(settings);
+        System.IO.File.WriteAllText(Application.dataPath + "/Resources/SDKSettings.json", json);
     }
 }
