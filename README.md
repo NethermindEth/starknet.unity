@@ -1,6 +1,13 @@
+<p align="center">
+  <a href="https://github.com/NethermindEth/starknet.unity">
+    <img alt="Starknet Unity SDK Icon" height="125" src="./.github/icon.png">
+  </a>
+  <br>
+</p>
+
 # Starknet Unity SDK
 
-Starknet Unity SDK allows game developers to integrate Starknet blockchain functionality into their Unity projects with ease.
+Starknet Unity SDK lets game developers integrate Starknet blockchain functionality into their Unity projects with ease.
 
 ## Features
 
