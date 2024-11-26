@@ -21,4 +21,9 @@ Starknet Unity SDK lets game developers integrate Starknet blockchain functional
 
 1. Download the [latest release](https://github.com/NethermindEth/starknet.unity/releases) from this repository.
 2. Import the package into your Unity project.
-3. Follow the integration instructions provided in our [documentation](Docs/Documentation.md).
+3. Follow the integration instructions provided in our [documentation](Docs/INSTALL.md).
+
+## Build
+1. Downdload the source code
+2. Open the code in unity
+3. Follow the instruction provided in [documentation](Docs/BUILD.md)
