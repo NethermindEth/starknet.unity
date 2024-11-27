@@ -27,8 +27,6 @@ selecting it and then click on Assets in the main menu bar)
 - Name the package and specify location to export package to.
 
 
-Or
-
 ## Build from command line
 
 
